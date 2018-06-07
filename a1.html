@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script type="text/javascript" src="https://gc.kis.v2.scr.kaspersky-labs.com/9F0C08EB-FB82-F04E-A101-204B996A165D/main.js" charset="UTF-8"></script></head>
+<body>
+<h1 style="color: blue">Shristi Jhabak</h1>
+<h2 id ="myHeader" style="color: blue">Student Id - 01541979</h2>
+<h3 class="myClass" style="font-style:italic;font-weight: normal">Data Visualization(CIS 602-01)</h3>
+<p>"This assignment is all my own work.I did not copy or rewrite the code from any other source except the code given in the assignment"</p>
+<svg id="initials" width="250" height="150">
+    <g> <polyline fill="none" stroke="red"
+                  points="10,10 30,10 10,10 10,40 30,40 30,40 30,70 10,70 "stroke-width="4"/>
+
+        <polyline fill="none" stroke="red"
+                  points="40,8 40,40 40,72 40,40 60,40 60,8 60,40 60,72"stroke-width="4"/>
+
+        <polyline fill="none" stroke="red"
+                  points="70,50 70,70 90,70 90,10" stroke-width="4"/>
+    </g>
+</svg>
+<script src="http://www.cis.umassd.edu/~dkoop/dsc530-2018sp/a1/us-refugees.js" type="text/javascript"></script>
+<script src="refugee.js" type="text/javascript"></script>
+
+<!---Total Sum---->
+<div id="values">
+    <h2>Data Processing(Total sum)</h2>
+    <p>
+        [119057, 111600, 131649, 119197, 112981, 99974, 76403, 70488, 77080, 85525, 73147, 69886, 27131, 28403, 52873, 53813, 41223, 48282, 60191, 74654, 73311, 56424, 58238, 69926, 69987, 69933, 84994, 53716]
+    </p>
+</div>
+
+
+<!--Barchart division-->
+<div id="barchart"/>
+<div id="controls">
+    <label for="year">Year:</label>
+    1990
+    <input type="range" id="Year" min="1990" max="2017" value="2002"
+           onchange="highlightYear(this.value)">
+    2017
+</div >
+
+
+<div id="textControls">
+    <label for="year">Input Year:</label>
+    <input type="text" id1="Year" onchange="highlightYear(this.value)">
+
+
+</div>
+
+
+<script>
+    console.log(refugees);
+    function startingYear(refugees) {
+        return refugees.Year>=1990;
+
+    }
+    var value = refugees.filter(startingYear);
+    function getTotals(refugees) {
+        var totalSum = [];
+        value.forEach(function(element){
+            var val = Object.values(element);
+            val.shift();
+            var sum = val.reduce(function(s,d,c) {
+                return s + d;
+            });
+            totalSum = totalSum.concat(sum);
+        });
+        return totalSum;
+    }
+    document.getElementById("dataSum").innerHTML=getTotals(refugees);
+
+</script>
+<script>
+    // id barchart
+
+    var nextVal = 0; // used to print values on vertical axis
+    var nextYear = 365;
+    function addEltToSVG(svg, name, attrs,label) {
+        var element = document.createElementNS("http://www.w3.org/2000/svg", name);
+        if (attrs === undefined) attrs = {};
+        element.textContent=label;
+        for (var key in attrs) {
+            element.setAttribute(key, attrs[key]);
+        }
+        svg.appendChild(element);
+    }
+
+    var svg = document.createElementNS("http://www.w3.org/2000/svg","svg");
+    var divElt = document.querySelector("#barchart");
+
+    divElt.appendChild(svg);
+    svg.setAttribute("width", 600);
+    svg.setAttribute("height", 400);
+    //addEltToSVG(svg, "rect", {"width": 20, "height": 20})
+    var a=getTotals(refugees);
+    a.forEach(function(d, i) {
+        /*vertical line y axis*/
+        addEltToSVG(svg, "line", {"x1": 55, "y1": 0, "x2": 55, "y2": 350, "stroke-width":2 , "stroke":"red"})
+        /*Horizontal line x axis*/
+        addEltToSVG(svg, "line", {"x1": 55, "y1": 350, "x2": 580, "y2": 350, "stroke-width":2, "stroke":"red"})
+        /*bar */
+        addEltToSVG(svg, "rect", {"x": 57 + 12 * i, "y": 350 - d / 600, "id":1990+i , "width": 9, "height": d / 600 });
+        /* Labeling*/
+        addEltToSVG(svg, "text", {"x": 0, "y": 350-nextVal/595, "fill": "black", "text":"svg"},nextVal)
+        nextVal = nextVal + 10000;
+        addEltToSVG(svg, "text", {"x": 11, "y": nextYear, "fill": "black", "transform":"rotate(-90 52 348)", "text":"svg"},value[i].Year)
+        nextYear = nextYear + 12;
+
+    })
+    /*highlight bar*/
+    function highlightYear(id){
+
+        document.getElementById(id).setAttribute("fill","blue");
+
+    }
+
+    function highlightinputyear(id1) {
+        document.getElementById(id1).setAttribute("fill","blue")
+
+    }
+
+</script>
+
+</body>
+</html>
